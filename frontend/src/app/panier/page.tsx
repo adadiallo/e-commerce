@@ -1,0 +1,163 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { FiTrash } from 'react-icons/fi';
+import Navbar from '../components/navbar';
+
+type ProduitPanier = {
+  id: number;
+  nom: string;
+  image?: string;
+  prix: number;
+  quantite: number;
+};
+
+export default function PanierPage() {
+  const [produits, setProduits] = useState<ProduitPanier[]>([]);
+  const [chargement, setChargement] = useState(true);
+  const { refreshCount } = useCart();
+
+  const fetchPanier = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch('http://localhost:3000/panier', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setProduits(data);
+    } catch (error) {
+      console.error('Erreur lors du chargement du panier :', error);
+    } finally {
+      setChargement(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPanier();
+  }, []);
+
+  const modifierQuantite = async (produitId: number, quantite: number) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    if (quantite < 1) return;
+
+    try {
+      await fetch(`http://localhost:3000/panier/update`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ produitId, quantite }),
+      });
+
+      fetchPanier();
+      refreshCount();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour :', error);
+    }
+  };
+
+  const supprimerProduit = async (produitId: number) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      await fetch(`http://localhost:3000/panier/remove/${produitId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchPanier();
+      refreshCount();
+    } catch (error) {
+      console.error('Erreur suppression produit :', error);
+    }
+  };
+
+  const totalPanier = produits.reduce((total, p) => total + p.prix * p.quantite, 0);
+
+  const validerCommande = () => {
+    alert('Commande validée ! (fonction à implémenter)');
+  };
+
+  if (chargement) return <p>Chargement du panier...</p>;
+
+  return (
+    <>
+    <Navbar/>
+    <div className="max-w-3xl mx-auto p-4 mt-30">
+      <h1 className="text-2xl font-bold mb-4 text-[#0c5e69]">Mon Panier</h1>
+
+      {produits.length === 0 ? (
+        <p className="text-gray-500">Votre panier est vide.</p>
+      ) : (
+        <>
+          {produits.map((produit) => (
+            <div
+              key={produit.id}
+              className="flex items-center justify-between border-b py-4"
+            >
+              <div className="flex items-center gap-4">
+                <img
+                  src={produit.image}
+                  alt={produit.nom}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div>
+                  <h2 className="font-semibold">{produit.nom}</h2>
+                  <p>{produit.prix} FCFA</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => modifierQuantite(produit.id, produit.quantite - 1)}
+                  className="px-2 py-1 border rounded"
+                >
+                  -
+                </button>
+                <span>{produit.quantite}</span>
+                <button
+                  onClick={() => modifierQuantite(produit.id, produit.quantite + 1)}
+                  className="px-2 py-1 border rounded"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => supprimerProduit(produit.id)}
+                  className="text-red-500 ml-4 text-2xl"
+                >
+                                      <FiTrash />
+                    
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <div className="mt-6 text-right">
+            <p className="text-lg font-bold">
+              Total : {totalPanier.toLocaleString()} FCFA
+            </p>
+            <button
+              onClick={validerCommande}
+              className="mt-2 bg-[#0c5e69] text-white px-4 py-2 rounded hover:bg-[#094e4f]"
+            >
+              Valider la commande
+            </button>
+          </div>
+        </>
+    
+      )}
+    </div>
+    </>
+  );
+}
