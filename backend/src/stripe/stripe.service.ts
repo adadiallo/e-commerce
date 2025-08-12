@@ -1,36 +1,52 @@
-// src/stripe/stripe.service.ts
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
-import { Commande } from 'src/commandes/entities/commande.entity';
 
 @Injectable()
 export class StripeService {
-  private stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2022-11-15',
-  });
+  private stripe: Stripe;
 
-  async createPaymentSession(commande: Commande) {
-    const session = await this.stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: commande.produits.map((item) => ({
-        price_data: {
-          currency: 'usd', // adapte à ta devise
-          product_data: {
-            name: item.produit.nom,
-            // description: item.produit.description,
-          },
-          unit_amount: item.produit.prix * 100, // prix en cents
-        },
-        quantity: item.quantite,
-      })),
-      mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/commande/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/commande/cancel`,
-      metadata: {
-        commandeId: commande.id.toString(),
-      },
+  constructor(private configService: ConfigService) {
+    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+    if (!stripeKey) {
+      throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
+    }
+
+    this.stripe = new Stripe(stripeKey, {
+      apiVersion: '2022-11-15' as any, // forcer le typage si nécessaire
     });
-
-    return session;
   }
+
+async createCheckoutSession(
+  amount: number,
+  currency: string,
+  successUrl: string,
+  cancelUrl: string,
+): Promise<Stripe.Checkout.Session> {
+const unitAmount =
+  currency.toLowerCase() === 'xof'
+    ? Math.round(amount)         // FCFA = montant entier, sans *100
+    : Math.round(amount * 100);  // USD et autres = montant en centimes
+
+  return await this.stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [
+      {
+        price_data: {
+          currency,
+          product_data: {
+            name: 'Commande AdaShop',
+          },
+          unit_amount: unitAmount,
+        },
+        quantity: 1,
+      },
+    ],
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+  });
+}
+
+
 }

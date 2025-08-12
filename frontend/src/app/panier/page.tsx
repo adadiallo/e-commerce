@@ -87,40 +87,41 @@ export default function PanierPage() {
   };
 
   // Valider la commande
-  const validerCommande = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Vous devez être connecté");
+ // Valider la commande et payer avec Stripe
+const validerCommande = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return alert("Vous devez être connecté");
 
-    const total = produits.reduce((acc, item) => acc + item.prix * item.quantite, 0);
-    const produitsPayload = produits.map((item) => ({
-      produitId: item.id,
-      nom: item.nom,
-      prix: item.prix,
-      quantite: item.quantite,
-    }));
+  try {
+    const res = await fetch("http://localhost:3000/commandes/valider", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ currency: 'xof' }),
+    });
 
-    try {
-      const res = await fetch("http://localhost:3000/commandes/valider", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ produits: produitsPayload, total }),
-      });
-
-      if (res.ok) {
-        alert("Commande validée !");
-        setProduits([]);
-        refreshCount();
-      } else {
-        alert("Erreur lors de la validation");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la validation de la commande :", error);
-      alert("Erreur réseau");
+    if (!res.ok) {
+      alert("Erreur lors de la validation de la commande");
+      return;
     }
-  };
+
+    const data = await res.json();
+
+    if (data.paymentUrl) {
+      window.location.href = data.paymentUrl;
+    } else {
+      alert("Pas d'URL de paiement reçue");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Erreur réseau");
+  }
+};
+
+
+
 
   const totalPanier = produits.reduce((total, p) => total + p.prix * p.quantite, 0);
 

@@ -15,7 +15,7 @@ export class CommandesService {
     private stripeService: StripeService,
   ) {}
 
-  async validerCommande(userId: number) {
+  async validerCommande(userId: number,currency: string) {
     const panier = await this.panierRepo.find({
       where: { user: { id: userId } },
       relations: ['produit'],
@@ -44,7 +44,13 @@ export class CommandesService {
 
     await this.panierRepo.delete({ user: { id: userId } });
 
-    const paymentSession = await this.stripeService.createPaymentSession(commande);
+    // ✅ Appel correct à Stripe
+    const paymentSession = await this.stripeService.createCheckoutSession(
+      total , // en centimes
+    currency,
+      `${process.env.FRONTEND_URL}/commande/success`,
+      `${process.env.FRONTEND_URL}/commande/cancel`,
+    );
 
     return {
       commande,

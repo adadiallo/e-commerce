@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, UseGuards, Req, Body } from '@nestjs/common';
 import { CommandesService } from './commandes.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -8,8 +8,8 @@ export class CommandesController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('valider')
-  async validerCommande(@Req() req) {
+  async validerCommande(@Req() req, @Body('currency') currency: string) {
     const userId = req.user.userId;
-    return this.commandesService.validerCommande(userId);
+    return this.commandesService.validerCommande(userId, currency);
   }
 }
