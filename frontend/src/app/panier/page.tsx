@@ -18,6 +18,7 @@ export default function PanierPage() {
   const [chargement, setChargement] = useState(true);
   const { refreshCount } = useCart();
 
+  // Charger le panier depuis l'API
   const fetchPanier = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -41,6 +42,7 @@ export default function PanierPage() {
     fetchPanier();
   }, []);
 
+  // Modifier la quantité
   const modifierQuantite = async (produitId: number, quantite: number) => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -64,6 +66,7 @@ export default function PanierPage() {
     }
   };
 
+  // Supprimer un produit
   const supprimerProduit = async (produitId: number) => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -83,81 +86,111 @@ export default function PanierPage() {
     }
   };
 
-  const totalPanier = produits.reduce((total, p) => total + p.prix * p.quantite, 0);
+  // Valider la commande
+  const validerCommande = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("Vous devez être connecté");
 
-  const validerCommande = () => {
-    alert('Commande validée ! (fonction à implémenter)');
+    const total = produits.reduce((acc, item) => acc + item.prix * item.quantite, 0);
+    const produitsPayload = produits.map((item) => ({
+      produitId: item.id,
+      nom: item.nom,
+      prix: item.prix,
+      quantite: item.quantite,
+    }));
+
+    try {
+      const res = await fetch("http://localhost:3000/commandes/valider", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ produits: produitsPayload, total }),
+      });
+
+      if (res.ok) {
+        alert("Commande validée !");
+        setProduits([]);
+        refreshCount();
+      } else {
+        alert("Erreur lors de la validation");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la validation de la commande :", error);
+      alert("Erreur réseau");
+    }
   };
+
+  const totalPanier = produits.reduce((total, p) => total + p.prix * p.quantite, 0);
 
   if (chargement) return <p>Chargement du panier...</p>;
 
   return (
     <>
-    <Navbar/>
-    <div className="max-w-3xl mx-auto p-4 mt-30">
-      <h1 className="text-2xl font-bold mb-4 text-[#0c5e69]">Mon Panier</h1>
+      <Navbar />
+      <div className="max-w-3xl mx-auto p-4 mt-30">
+        <h1 className="text-2xl font-bold mb-4 text-[#0c5e69]">Mon Panier</h1>
 
-      {produits.length === 0 ? (
-        <p className="text-gray-500">Votre panier est vide.</p>
-      ) : (
-        <>
-          {produits.map((produit) => (
-            <div
-              key={produit.id}
-              className="flex items-center justify-between border-b py-4"
-            >
-              <div className="flex items-center gap-4">
-                <img
-                  src={produit.image}
-                  alt={produit.nom}
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <div>
-                  <h2 className="font-semibold">{produit.nom}</h2>
-                  <p>{produit.prix} FCFA</p>
+        {produits.length === 0 ? (
+          <p className="text-gray-500">Votre panier est vide.</p>
+        ) : (
+          <>
+            {produits.map((produit) => (
+              <div
+                key={produit.id}
+                className="flex items-center justify-between border-b py-4"
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src={produit.image}
+                    alt={produit.nom}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+                  <div>
+                    <h2 className="font-semibold">{produit.nom}</h2>
+                    <p>{produit.prix} FCFA</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => modifierQuantite(produit.id, produit.quantite - 1)}
+                    className="px-2 py-1 border rounded"
+                  >
+                    -
+                  </button>
+                  <span>{produit.quantite}</span>
+                  <button
+                    onClick={() => modifierQuantite(produit.id, produit.quantite + 1)}
+                    className="px-2 py-1 border rounded"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => supprimerProduit(produit.id)}
+                    className="text-red-500 ml-4 text-2xl"
+                  >
+                    <FiTrash />
+                  </button>
                 </div>
               </div>
+            ))}
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => modifierQuantite(produit.id, produit.quantite - 1)}
-                  className="px-2 py-1 border rounded"
-                >
-                  -
-                </button>
-                <span>{produit.quantite}</span>
-                <button
-                  onClick={() => modifierQuantite(produit.id, produit.quantite + 1)}
-                  className="px-2 py-1 border rounded"
-                >
-                  +
-                </button>
-                <button
-                  onClick={() => supprimerProduit(produit.id)}
-                  className="text-red-500 ml-4 text-2xl"
-                >
-                                      <FiTrash />
-                    
-                </button>
-              </div>
+            <div className="mt-6 text-right">
+              <p className="text-lg font-bold">
+                Total : {totalPanier.toLocaleString()} FCFA
+              </p>
+              <button
+                onClick={validerCommande}
+                className="mt-2 bg-[#0c5e69] text-white px-4 py-2 rounded hover:bg-[#094e4f]"
+              >
+                Valider la commande
+              </button>
             </div>
-          ))}
-
-          <div className="mt-6 text-right">
-            <p className="text-lg font-bold">
-              Total : {totalPanier.toLocaleString()} FCFA
-            </p>
-            <button
-              onClick={validerCommande}
-              className="mt-2 bg-[#0c5e69] text-white px-4 py-2 rounded hover:bg-[#094e4f]"
-            >
-              Valider la commande
-            </button>
-          </div>
-        </>
-    
-      )}
-    </div>
+          </>
+        )}
+      </div>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import { Commande } from 'src/commandes/entities/commande.entity';
 import { PanierItem } from 'src/panier/entities/panier-item.entity';
 import { Produit } from 'src/produits/entities/produit.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -23,4 +24,6 @@ role:string;
    @OneToMany(() => PanierItem, (panier) => panier.user)
   paniers: PanierItem[];
 
+  @OneToMany(() => Commande,commande=> commande.user)
+  commandes:Commande[];
 }
