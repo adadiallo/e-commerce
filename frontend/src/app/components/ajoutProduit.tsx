@@ -1,8 +1,8 @@
 "use client";
 
-import { uploadToCloudinary } from "@/lib/cloudinary/uploadToCloudinary";
 import { useEffect, useState } from "react";
 import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
+import Image from "next/image";
 
 type Produit = {
   id: number;
@@ -21,7 +21,7 @@ export default function ProductTable() {
     nom: "",
     description: "",
     prix: "",
-    image: "",
+    imageFile: null as File | null,
   });
 
   useEffect(() => {
@@ -33,16 +33,11 @@ export default function ProductTable() {
     const data = await res.json();
     setProduits(data);
   };
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    try {
-      const imageUrl = await uploadToCloudinary(file);
-      setForm((prev) => ({ ...prev, image: imageUrl }));
-    } catch (error) {
-      console.error("Erreur lors de l’upload vers Cloudinary", error);
-      alert("Échec de l’upload de l’image.");
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setForm((prev) => ({ ...prev, imageFile: file }));
     }
   };
 
@@ -55,12 +50,13 @@ export default function ProductTable() {
   const handleSubmitProduit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
-      nom: form.nom,
-      description: form.description,
-      prix: parseFloat(form.prix),
-      image: form.image,
-    };
+    const formData = new FormData();
+    formData.append("nom", form.nom);
+    formData.append("description", form.description);
+    formData.append("prix", form.prix);
+    if (form.imageFile) {
+      formData.append("image", form.imageFile);
+    }
 
     const url = selectedProduit
       ? `http://localhost:3000/produits/${selectedProduit.id}`
@@ -72,18 +68,18 @@ export default function ProductTable() {
     const res = await fetch(url, {
       method,
       headers: {
-        "Content-Type": "application/json", // On précise qu'on envoie du JSON
-
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(payload),
+      body: formData,
     });
 
     if (res.ok) {
       setShowModal(false);
-      setForm({ nom: "", description: "", prix: "", image: "" });
+      setForm({ nom: "", description: "", prix: "", imageFile: null });
       setSelectedProduit(null);
       fetchProduits();
+    } else {
+      alert("Erreur lors de l'enregistrement du produit");
     }
   };
 
@@ -93,18 +89,14 @@ export default function ProductTable() {
       const token = localStorage.getItem("token");
       await fetch(`http://localhost:3000/produits/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      fetchProduits(); // Pour rafraîchir la liste après suppression
+      fetchProduits();
     }
   };
 
   return (
-    <>
-    
-   <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
+    <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-[#0c5e69]">
           Liste des produits
@@ -120,10 +112,10 @@ export default function ProductTable() {
       <table className="w-full border border-gray-200">
         <thead className="bg-[#0c5e69] text-left text-white">
           <tr>
-            <th className="p-2 ">Nom</th>
+            <th className="p-2">Nom</th>
             <th className="p-2">Description</th>
             <th className="p-2">Prix</th>
-            {/* <th className="p-2">Image</th> */}
+            <th className="p-2">Image</th>
 
             <th className="p-2">Actions</th>
           </tr>
@@ -131,20 +123,20 @@ export default function ProductTable() {
         <tbody>
           {produits.map((prod) => (
             <tr key={prod.id} className="border-t">
-              <td className="p-2 ">{prod.nom}</td>
+              <td className="p-2">{prod.nom}</td>
               <td className="p-2">{prod.description}</td>
               <td className="p-2">{prod.prix} FCFA</td>
-              {/* <td>
-                {prod.image ? (
-                  <img
-                    src={prod.image}
-                    alt={prod.nom}
-                    className="w-24 h-24 object-cover rounded"
-                  />
-                ) : (
-                  <span className="text-red-500">Aucune image</span>
-                )}
-              </td> */}
+              <td className="p-2">
+                {" "}
+              <Image
+  src={prod.image || "/placeholder.png"}
+  alt={prod.nom}
+  width={20}
+  height={20}
+  className="object-cover rounded-full border border-gray-200"
+/>
+
+              </td>
 
               <td className="p-2 flex gap-2">
                 <button
@@ -154,7 +146,7 @@ export default function ProductTable() {
                       nom: prod.nom,
                       description: prod.description,
                       prix: prod.prix.toString(),
-                      image: prod.image || "",
+                      imageFile: null,
                     });
                     setShowModal(true);
                   }}
@@ -162,7 +154,6 @@ export default function ProductTable() {
                 >
                   <FiEdit />
                 </button>
-
                 <button
                   onClick={() => handleDelete(prod.id)}
                   className="text-red-500 hover:text-red-700"
@@ -175,7 +166,6 @@ export default function ProductTable() {
         </tbody>
       </table>
 
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded w-full max-w-md">
@@ -215,7 +205,7 @@ export default function ProductTable() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleFileUpload}
+                onChange={handleFileChange}
                 className="border border-gray-300 p-2 rounded"
               />
 
@@ -239,7 +229,5 @@ export default function ProductTable() {
         </div>
       )}
     </div>
-
-    </>
   );
 }

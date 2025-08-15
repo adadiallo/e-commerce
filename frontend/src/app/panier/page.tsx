@@ -146,7 +146,7 @@ const validerCommande = async () => {
                   <img
                     src={produit.image}
                     alt={produit.nom}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-32 h-32 object-cover rounded"
                   />
                   <div>
                     <h2 className="font-semibold">{produit.nom}</h2>
