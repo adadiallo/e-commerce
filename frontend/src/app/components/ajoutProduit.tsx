@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
 import Image from "next/image";
+import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
+
+type Categorie = {
+  id: number;
+  nom: string;
+};
 
 type Produit = {
   id: number;
@@ -10,10 +15,12 @@ type Produit = {
   description: string;
   prix: number;
   image?: string;
+  category?: Categorie;
 };
 
-export default function ProductTable() {
+export default function ProduitManager() {
   const [produits, setProduits] = useState<Produit[]>([]);
+  const [categories, setCategories] = useState<Categorie[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduit, setSelectedProduit] = useState<Produit | null>(null);
 
@@ -22,85 +29,91 @@ export default function ProductTable() {
     description: "",
     prix: "",
     imageFile: null as File | null,
+    categoryId: "",
   });
 
+  // Charger produits et catégories
   useEffect(() => {
     fetchProduits();
+    fetchCategories();
   }, []);
 
   const fetchProduits = async () => {
     const res = await fetch("http://localhost:3000/produits");
     const data = await res.json();
     setProduits(data);
+      console.log('DONNEES:',data); // <--- Vérifier la structure ici
+  setProduits(data);
+  };
+
+  const fetchCategories = async () => {
+    const res = await fetch("http://localhost:3000/categories");
+    const data = await res.json();
+    setCategories(data);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setForm((prev) => ({ ...prev, imageFile: file }));
-    }
+    if (file) setForm((prev) => ({ ...prev, imageFile: file }));
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmitProduit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.categoryId) {
+      alert("Veuillez choisir une catégorie !");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("nom", form.nom);
     formData.append("description", form.description);
     formData.append("prix", form.prix);
-    if (form.imageFile) {
-      formData.append("image", form.imageFile);
-    }
+    formData.append("categoryId", form.categoryId);
+    if (form.imageFile) formData.append("image", form.imageFile);
 
     const url = selectedProduit
       ? `http://localhost:3000/produits/${selectedProduit.id}`
-      : `http://localhost:3000/produits`;
-
+      : "http://localhost:3000/produits";
     const method = selectedProduit ? "PATCH" : "POST";
+
     const token = localStorage.getItem("token");
 
     const res = await fetch(url, {
       method,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
     if (res.ok) {
       setShowModal(false);
-      setForm({ nom: "", description: "", prix: "", imageFile: null });
       setSelectedProduit(null);
+      setForm({ nom: "", description: "", prix: "", imageFile: null, categoryId: "" });
       fetchProduits();
+      
     } else {
-      alert("Erreur lors de l'enregistrement du produit");
+      alert("Erreur lors de l'enregistrement");
     }
   };
 
   const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm("Supprimer ce produit ?");
-    if (confirmDelete) {
-      const token = localStorage.getItem("token");
-      await fetch(`http://localhost:3000/produits/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchProduits();
-    }
+    if (!confirm("Supprimer ce produit ?")) return;
+    const token = localStorage.getItem("token");
+    await fetch(`http://localhost:3000/produits/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    fetchProduits();
   };
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-[#0c5e69]">
-          Liste des produits
-        </h2>
+        <h2 className="text-xl font-semibold text-[#0c5e69]">Liste des produits</h2>
         <button
           onClick={() => setShowModal(true)}
           className="bg-[#0c5e69] text-white px-4 py-2 rounded flex items-center gap-2"
@@ -109,35 +122,36 @@ export default function ProductTable() {
         </button>
       </div>
 
+      {/* Tableau Produits */}
       <table className="w-full border border-gray-200">
-        <thead className="bg-[#0c5e69] text-left text-white">
+        <thead className="bg-[#0c5e69] text-white text-left">
           <tr>
+            <th className="p-2">Image</th>
             <th className="p-2">Nom</th>
             <th className="p-2">Description</th>
             <th className="p-2">Prix</th>
-            <th className="p-2">Image</th>
-
+            <th className="p-2">Catégorie</th>
             <th className="p-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           {produits.map((prod) => (
-            <tr key={prod.id} className="border-t">
+            <tr key={prod.id} className="border-t hover:bg-blue-50">
+              <td className="p-2">
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
+                  <Image
+                    src={prod.image || "/placeholder.png"}
+                    alt={prod.nom}
+                    width={48}
+                    height={48}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              </td>
               <td className="p-2">{prod.nom}</td>
               <td className="p-2">{prod.description}</td>
               <td className="p-2">{prod.prix} FCFA</td>
-              <td className="p-2">
-                {" "}
-              <Image
-  src={prod.image || "/placeholder.png"}
-  alt={prod.nom}
-  width={20}
-  height={20}
-  className="object-cover rounded-full border border-gray-200"
-/>
-
-              </td>
-
+              <td className="p-2">{prod.category?.nom || "-"}</td>
               <td className="p-2 flex gap-2">
                 <button
                   onClick={() => {
@@ -147,6 +161,7 @@ export default function ProductTable() {
                       description: prod.description,
                       prix: prod.prix.toString(),
                       imageFile: null,
+                      categoryId: prod.category?.id.toString() || "",
                     });
                     setShowModal(true);
                   }}
@@ -166,16 +181,14 @@ export default function ProductTable() {
         </tbody>
       </table>
 
+      {/* Modal Ajout/Édition */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded w-full max-w-md">
             <h2 className="text-lg font-semibold text-[#0c5e69] mb-4">
               {selectedProduit ? "Modifier le produit" : "Ajouter un produit"}
             </h2>
-            <form
-              onSubmit={handleSubmitProduit}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
                 type="text"
                 name="nom"
@@ -202,13 +215,27 @@ export default function ProductTable() {
                 className="border border-gray-300 p-2 rounded"
                 required
               />
+              {/* Select catégorie */}
+              <select
+                name="categorieId"
+                value={form.categoryId}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+                required
+              >
+                <option value="">-- Choisir une catégorie --</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nom}
+                  </option>
+                ))}
+              </select>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
                 className="border border-gray-300 p-2 rounded"
               />
-
               <div className="flex justify-between mt-2">
                 <button
                   type="button"

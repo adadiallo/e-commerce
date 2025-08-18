@@ -15,6 +15,9 @@ import { StripeController } from './stripe/stripe.controller';
 import { StripeModule } from './stripe/stripe.module';
 import { ConfigModule } from '@nestjs/config';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CategoriesController } from './categories/categories.controller';
+import { CategoriesModule } from './categories/categories.module';
+import { Category } from './categories/entities/category.entity';
 
 @Module({
   
@@ -32,7 +35,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
       username: 'root', // par défaut sous XAMPP/MAMP
       password: '',     // vide par défaut
       database: 'ecommerce',
-      entities: [User, Produit, PanierItem, Commande],
+      entities: [User, Produit, PanierItem, Commande,Category],
       synchronize: true,
     }),
     AuthModule,
@@ -41,8 +44,9 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
     PanierModule,
     CommandesModule,
     StripeModule,
+    CategoriesModule,
   ],
-  controllers: [AppController, StripeController],
+  controllers: [AppController, StripeController, CategoriesController],
   providers: [AppService, CloudinaryService],
 })
 export class AppModule {}

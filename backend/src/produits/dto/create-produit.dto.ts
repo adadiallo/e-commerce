@@ -3,5 +3,6 @@ export class CreateProduitDto {
     description:string;
     prix:number;
     image?:string;
+    categoryId:number;
 
 }
