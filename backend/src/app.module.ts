@@ -18,6 +18,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CategoriesController } from './categories/categories.controller';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/entities/category.entity';
+import { DashboardController } from './dashboard/dashboard.controller';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   
@@ -45,8 +47,9 @@ import { Category } from './categories/entities/category.entity';
     CommandesModule,
     StripeModule,
     CategoriesModule,
+    DashboardModule,
   ],
-  controllers: [AppController, StripeController, CategoriesController],
+  controllers: [AppController, StripeController, CategoriesController, DashboardController],
   providers: [AppService, CloudinaryService],
 })
 export class AppModule {}

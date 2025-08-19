@@ -3,9 +3,10 @@ import { PanierItem } from 'src/panier/entities/panier-item.entity';
 import { Produit } from 'src/produits/entities/produit.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
+export type UserRole = 'admin' | 'user';
+
 @Entity()
 export class User {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,8 +18,7 @@ export class User {
 
   @Column({ unique: true })
   email: string;
-@Column ()
-role:string;
+
   @Column()
   password: string;
    @OneToMany(() => PanierItem, (panier) => panier.user)
@@ -26,4 +26,6 @@ role:string;
 
   @OneToMany(() => Commande,commande=> commande.user)
   commandes:Commande[];
+   @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' })
+  role: UserRole;
 }

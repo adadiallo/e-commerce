@@ -26,8 +26,11 @@ export class ProduitsService {
     return this.produitRepo.save(produit);
   }
   async findAll() {
-    return await this.produitRepo.find({ relations: ['category'] });
-  }
+  return await this.produitRepo.find({
+    where: { isActive: true }, // ✅ seulement les actifs
+    relations: ['category'],
+  });
+}
   async findOne(id: number) {
   const produit = await this.produitRepo.findOne({
     where: { id },
@@ -37,33 +40,44 @@ export class ProduitsService {
   return produit;
 }
 
-async update(id: number, dto: UpdateProduitDto): Promise<Produit> {
-  let produit = await this.produitRepo.preload({ id, ...dto });
+async update(id: number, dto: UpdateProduitDto, imageUrl?: string): Promise<Produit> {
+  const produit = await this.produitRepo.preload({ id, ...dto });
 
   if (!produit) {
     throw new NotFoundException(`Produit avec l'id ${id} non trouvé`);
   }
 
-  // si dto.categoryId est fourni, charger la catégorie
+  // Mise à jour catégorie
   if (dto.categoryId) {
     const category = await this.categoryRepo.findOne({
-      where: { id: dto.categoryId },
+      where: { id: +dto.categoryId }, // conversion en number
     });
     if (!category) throw new NotFoundException('Catégorie introuvable');
     produit.category = category;
+  }
+
+  // Mise à jour image
+  if (imageUrl) {
+    produit.image = imageUrl;
   }
 
   return this.produitRepo.save(produit);
 }
 
 
-  async remove(id: number): Promise<void> {
-    const produit = await this.produitRepo.findOneBy({ id });
 
-    if (!produit) {
-      throw new NotFoundException(`Produit avec l'id ${id} non trouvé`);
-    }
+async remove(id: number) {
+  const produit = await this.produitRepo.findOne({ where: { id } });
 
-    await this.produitRepo.remove(produit);
+  if (!produit) {
+    throw new NotFoundException(`Produit avec l'id ${id} non trouvé`);
   }
+
+  // ✅ Soft delete
+  produit.isActive = false;
+  await this.produitRepo.save(produit);
+
+  return { message: `Produit ${id} désactivé avec succès` };
+}
+
 }

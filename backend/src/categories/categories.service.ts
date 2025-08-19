@@ -29,9 +29,11 @@ async findOne(id: number):Promise<Category>{
  }
 
 async update(id:number, createCategoryDto:CreateCategoryDto):Promise<Category>{
-    const category= await this.findOne(id);
+    const category = await this.findOne(id);
+    category.nom = createCategoryDto.nom;
     return await this.categoryRepository.save(category);
 }
+
 
 async remove(id:number):Promise<void> {
     const result = await this.categoryRepository.delete(id);

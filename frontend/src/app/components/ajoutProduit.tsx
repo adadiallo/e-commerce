@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 type Categorie = {
   id: number;
@@ -61,54 +62,85 @@ export default function ProduitManager() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!form.categoryId) {
-      alert("Veuillez choisir une catégorie !");
-      return;
+  if (!form.categoryId) {
+    toast.error("Veuillez choisir une catégorie !");
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+  let res;
+
+  try {
+    if (selectedProduit) {
+      res = await fetch(`http://localhost:3000/produits/${selectedProduit.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nom: form.nom,
+          description: form.description,
+          prix: parseFloat(form.prix),
+          categoryId: parseInt(form.categoryId),
+        }),
+      });
+      if (res.ok) toast.success("Produit modifié avec succès !");
+      else toast.error("Erreur lors de la modification !");
+    } else {
+      // Création : FormData pour inclure l'image
+      const formData = new FormData();
+      formData.append("nom", form.nom);
+      formData.append("description", form.description);
+      formData.append("prix", form.prix);
+      formData.append("categoryId", form.categoryId);
+      if (form.imageFile) formData.append("image", form.imageFile);
+
+      res = await fetch("http://localhost:3000/produits", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (res.ok) toast.success("Produit ajouté avec succès !");
+      else toast.error("Erreur lors de l'ajout !");
     }
-
-    const formData = new FormData();
-    formData.append("nom", form.nom);
-    formData.append("description", form.description);
-    formData.append("prix", form.prix);
-    formData.append("categoryId", form.categoryId);
-    if (form.imageFile) formData.append("image", form.imageFile);
-
-    const url = selectedProduit
-      ? `http://localhost:3000/produits/${selectedProduit.id}`
-      : "http://localhost:3000/produits";
-    const method = selectedProduit ? "PATCH" : "POST";
-
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(url, {
-      method,
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
 
     if (res.ok) {
       setShowModal(false);
       setSelectedProduit(null);
       setForm({ nom: "", description: "", prix: "", imageFile: null, categoryId: "" });
       fetchProduits();
-      
-    } else {
-      alert("Erreur lors de l'enregistrement");
     }
-  };
+  } catch (error) {
+    toast.error("Une erreur est survenue !");
+  }
+};
+
+
+
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Supprimer ce produit ?")) return;
-    const token = localStorage.getItem("token");
-    await fetch(`http://localhost:3000/produits/${id}`, {
+  if (!confirm("Supprimer ce produit ?")) return;
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`http://localhost:3000/produits/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
-    fetchProduits();
-  };
+    if (res.ok) {
+      toast.success("Produit supprimé !");
+      fetchProduits();
+    } else {
+      toast.error("Erreur lors de la suppression !");
+    }
+  } catch (error) {
+    toast.error("Une erreur est survenue !");
+  }
+};
+
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
@@ -217,7 +249,7 @@ export default function ProduitManager() {
               />
               {/* Select catégorie */}
               <select
-                name="categorieId"
+                name="categoryId"
                 value={form.categoryId}
                 onChange={handleChange}
                 className="border border-gray-300 p-2 rounded"

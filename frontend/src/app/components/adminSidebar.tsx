@@ -11,6 +11,12 @@ export default function SidebarAdmin({ onLinkClick }: SidebarProps) {
       <h2 className="text-2xl font-bold mt-8">Admin Dashboard</h2>
 
       <nav className="flex flex-col gap-4 text-lg font-medium mt-4">
+        <Link href="/admin/category"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
+            onClick={onLinkClick}>
+         
+            Liste des Categories
+        
+        </Link>
         <Link href="/admin/produits"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
             onClick={onLinkClick}>
          
