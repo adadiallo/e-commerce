@@ -19,8 +19,7 @@ findAll(){
  }
   
  @Post()
- @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+
  create(@Body() createCategoryDto:CreateCategoryDto){
     return this.categoriesServices.create(createCategoryDto);
  }

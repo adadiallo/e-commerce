@@ -13,7 +13,7 @@ import { RolesGuard } from 'src/auth/guards/role.guard';
 export class ProduitsController {
   constructor(
     private readonly produitsService: ProduitsService,
-    private readonly cloudinaryService: CloudinaryService, // ✅ injection ici
+    private readonly cloudinaryService: CloudinaryService, 
   ) {}
 
 @Get()
@@ -50,8 +50,8 @@ async update(
 remove(@Param('id') id: string){
     return this.produitsService.remove(+id);
 }
- @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+ @UseGuards(JwtAuthGuard)
+ 
 @Post()
 
 @UseInterceptors(FileInterceptor('image'))
@@ -68,7 +68,7 @@ async create(@Body() dto: CreateProduitDto, @UploadedFile() file: Express.Multer
     return this.produitsService.create(dto);
   } catch (error) {
     console.error('Erreur lors de la création du produit:', error);
-    throw error; // NestJS affichera l’erreur exacte
+    throw error; 
   }
 }
 

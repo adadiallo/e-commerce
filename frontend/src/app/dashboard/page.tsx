@@ -10,20 +10,18 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Navbar avec bouton pour ouvrir la sidebar sur mobile */}
       <AdminNavbar>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="md:hidden text-white text-2xl px-3 py-1 rounded hover:bg-[#094e57]"
           aria-label="Toggle sidebar"
         >
-          {/* Icône hamburger simple */}
           ☰
         </button>
       </AdminNavbar>
 
-      <div className="flex flex-1 pt-8"> {/* pt-20 pour laisser place à la navbar fixe */}
-        {/* Sidebar responsive */}
+      <div className="flex flex-1 pt-8">
+    
         <aside
           className={`
             fixed inset-y-0 left-0 z-40 w-64 bg-[#0c5e69] text-white shadow-lg

@@ -1,45 +1,50 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProduitsModule } from './produits/produits.module';
-import { Produit } from './produits/entities/produit.entity';
 import { PanierModule } from './panier/panier.module';
-import { PanierItem } from './panier/entities/panier-item.entity';
 import { CommandesModule } from './commandes/commandes.module';
-import { Commande } from './commandes/entities/commande.entity';
-import { StripeController } from './stripe/stripe.controller';
 import { StripeModule } from './stripe/stripe.module';
-import { ConfigModule } from '@nestjs/config';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { CategoriesController } from './categories/categories.controller';
 import { CategoriesModule } from './categories/categories.module';
-import { Category } from './categories/entities/category.entity';
-import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardModule } from './dashboard/dashboard.module';
 
+import { User } from './users/entities/user.entity';
+import { Produit } from './produits/entities/produit.entity';
+import { PanierItem } from './panier/entities/panier-item.entity';
+import { Commande } from './commandes/entities/commande.entity';
+import { Category } from './categories/entities/category.entity';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+
 @Module({
-  
   imports: [
-    // 1️⃣ Charger les variables d'environnement
+    // 1️⃣ Variables d'environnement globales
     ConfigModule.forRoot({
-      isGlobal: true, // accessible partout sans réimporter
+      isGlobal: true,
     }),
 
-    // 2️⃣ Connexion à MySQL
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root', // par défaut sous XAMPP/MAMP
-      password: '',     // vide par défaut
-      database: 'ecommerce',
-      entities: [User, Produit, PanierItem, Commande,Category],
-      synchronize: true,
+    // 2️⃣ Connexion à MySQL avec TypeORM
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get<string>('DB_HOST') || 'localhost',
+        port: config.get<number>('DB_PORT') || 3306,
+        username: config.get<string>('DB_USERNAME') || 'root',
+        password: config.get<string>('DB_PASSWORD') || '',
+        database: config.get<string>('DB_NAME') || 'ecommerce',
+        entities: [User, Produit, PanierItem, Commande, Category],
+        synchronize: true, // false en prod
+      }),
     }),
+
+    // 3️⃣ Modules de l'application
     AuthModule,
     UsersModule,
     ProduitsModule,
@@ -49,7 +54,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     CategoriesModule,
     DashboardModule,
   ],
-  controllers: [AppController, StripeController, CategoriesController, DashboardController],
+  controllers: [AppController], // les autres sont déjà dans leurs modules
   providers: [AppService, CloudinaryService],
 })
 export class AppModule {}
