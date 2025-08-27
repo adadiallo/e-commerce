@@ -33,11 +33,11 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: config.get<string>('DB_HOST') || 'localhost',
-        port: config.get<number>('DB_PORT') || 3306,
-        username: config.get<string>('DB_USERNAME') || 'root',
-        password: config.get<string>('DB_PASSWORD') || '',
+        port: config.get<number>('DB_PORT') || 5432,
+        username: config.get<string>('DB_USERNAME') || 'postgres',
+        password: config.get<string>('DB_PASSWORD') || 'ecommercepassword ',
         database: config.get<string>('DB_NAME') || 'ecommerce',
         entities: [User, Produit, PanierItem, Commande, Category],
         synchronize: true, // false en prod

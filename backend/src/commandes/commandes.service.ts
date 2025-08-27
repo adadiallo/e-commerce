@@ -44,9 +44,8 @@ export class CommandesService {
 
     await this.panierRepo.delete({ user: { id: userId } });
 
-    // ✅ Appel correct à Stripe
     const paymentSession = await this.stripeService.createCheckoutSession(
-      total , // en centimes
+      total , 
     currency,
       `${process.env.FRONTEND_URL}/commande/success`,
       `${process.env.FRONTEND_URL}/commande/cancel`,

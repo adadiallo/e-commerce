@@ -13,7 +13,7 @@ export class StripeService {
     }
 
     this.stripe = new Stripe(stripeKey, {
-      apiVersion: '2022-11-15' as any, // forcer le typage si nécessaire
+      apiVersion: '2022-11-15' as any, 
     });
   }
 
@@ -25,9 +25,8 @@ async createCheckoutSession(
 ): Promise<Stripe.Checkout.Session> {
 const unitAmount =
   currency.toLowerCase() === 'xof'
-    ? Math.round(amount)         // FCFA = montant entier, sans *100
-    : Math.round(amount * 100);  // USD et autres = montant en centimes
-
+    ? Math.round(amount)         
+    : Math.round(amount * 100);  
   return await this.stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
