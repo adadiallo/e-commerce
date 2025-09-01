@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
+import toast from "react-hot-toast";
 
 export type Product = {
   id: number;
@@ -37,6 +38,7 @@ export default function ProductCard({ produit }: { produit: Product }) {
       });
 
       if (response.ok) {
+        toast.success('Produit ajoute au panier')
         const data = await response.json();
         localStorage.setItem("panier", JSON.stringify(data));
         await refreshCount();

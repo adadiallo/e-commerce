@@ -33,7 +33,6 @@ export default function ProduitManager() {
     categoryId: "",
   });
 
-  // Charger produits et catégories
   useEffect(() => {
     fetchProduits();
     fetchCategories();
@@ -43,8 +42,7 @@ export default function ProduitManager() {
     const res = await fetch("http://localhost:3000/produits");
     const data = await res.json();
     setProduits(data);
-      console.log('DONNEES:',data); // <--- Vérifier la structure ici
-  setProduits(data);
+      console.log('DONNEES:',data); 
   };
 
   const fetchCategories = async () => {
@@ -91,7 +89,6 @@ const handleSubmit = async (e: React.FormEvent) => {
       if (res.ok) toast.success("Produit modifié avec succès !");
       else toast.error("Erreur lors de la modification !");
     } else {
-      // Création : FormData pour inclure l'image
       const formData = new FormData();
       formData.append("nom", form.nom);
       formData.append("description", form.description);

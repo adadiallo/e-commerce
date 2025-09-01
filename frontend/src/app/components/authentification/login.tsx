@@ -3,6 +3,7 @@
 import { useUser } from '@/app/context/UserContext';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -37,7 +38,6 @@ console.log("token reçu :",data.access_token.access_token);
 
 console.log("type du token :", typeof data.access_token.access_token);
 
-        // ✅ Récupération du user via /auth/me
         const meRes = await fetch('http://localhost:3000/auth/profile', {
           headers: {
             Authorization: `Bearer ${data.access_token.access_token}`,
@@ -45,14 +45,14 @@ console.log("type du token :", typeof data.access_token.access_token);
         });
 
         if (meRes.ok) {
+          toast.success("Connexion reussi!");
           const userData = await meRes.json();
           setUser(userData); 
             localStorage.setItem("users", JSON.stringify(userData));
 
           router.push('/');
         } else {
-          alert("Impossible de récupérer les infos utilisateur.");
-        }
+toast.error("Erreur lors de la connexion !");        }
       } else {
         const errorData = await response.json();
         console.error('Erreur lors de la connexion :', errorData.message);

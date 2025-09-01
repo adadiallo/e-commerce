@@ -31,11 +31,11 @@ export default function SidebarAdmin({ onLinkClick }: SidebarProps) {
           
         </Link>
 
-        <Link href="/admin/commandes"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
+        {/* <Link href="/admin/commandes"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
             onClick={onLinkClick}>
          
             Liste des commandes
-        </Link>
+        </Link> */}
       </nav>
     </div>
   );

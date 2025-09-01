@@ -34,10 +34,10 @@ export default function ListeProduits() {
     <div className="">
      
         <Navbar/>
-            <div className="mt-16">
+            <div className="mt-8">
 
-      <h1 className="text-2xl font-bold mb-4">Produits disponibles</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <h1 className="text-2xl font-bold mb-4 ">Produits disponibles</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mx-auto">
         {produits.map((produit) => (
           <ProductCard key={produit.id} produit={produit} />
         ))}

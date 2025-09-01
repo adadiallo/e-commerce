@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-[#0c5e69] text-white shadow-md px-6 py-4 flex items-center justify-between">
-      {/* Logo */}
+    
       <div
         className="text-2xl font-bold cursor-pointer"
         onClick={() => router.push("/")}
@@ -39,15 +39,12 @@ export default function Navbar() {
 
 
 
-      {/* Côté droit */}
       <div className="flex gap-6 items-center relative">
-        {/* Téléphone */}
         <div className="flex items-center gap-2">
           <FaPhoneAlt size={18} />
           <p>781452667</p>
         </div>
 
-        {/* Panier */}
         <button
           className="relative text-white hover:text-[#f5c542]"
           onClick={() => router.push("/panier")}
@@ -60,7 +57,6 @@ export default function Navbar() {
           )}
         </button>
 
-        {/* Utilisateur connecté */}
         {!loading && user ? (
           <div className="relative">
             <button
@@ -70,7 +66,6 @@ export default function Navbar() {
               <IoMdPerson size={20} />
             </button>
 
-            {/* Dropdown */}
             {open && (
               <div className="absolute right-0 mt-2 w-40 bg-white text-[#0c5e69] rounded-md shadow-lg overflow-hidden">
                 <div className="px-4 py-2 font-medium border-b">

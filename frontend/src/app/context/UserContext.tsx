@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type User = {
   id: number;
@@ -21,7 +22,9 @@ const UserContext = createContext<UserContextType>({
   user: null,
   setUser: () => {},
   loading: true,
-  logout: () => {}, // valeur par défaut
+
+  logout: () => {}, 
+
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -56,11 +59,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
-  // ✅ Fonction de déconnexion
   const logout = () => {
-    localStorage.removeItem("token"); // on supprime le token
-    setUser(null); // on vide l'utilisateur
-    router.push("/login"); // optionnel : redirection vers login
+    localStorage.removeItem("token"); 
+
+    setUser(null); 
+                    toast.success("Deconnexion  reussi!");
+
+    router.push("/login"); 
   };
 
   return (

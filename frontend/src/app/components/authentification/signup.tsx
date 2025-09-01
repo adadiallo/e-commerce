@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -28,9 +29,13 @@ export default function Signup() {
       });
 
       if (response.ok) {
+                  toast.success("Inscription  reussi!");
+
         const data = await response.json();
         console.log('Inscription réussie :', data);
       } else {
+                  toast.error("Error lors de l'inscription!");
+
         const errorData = await response.json();
         console.error('Erreur lors de l’inscription :', errorData.message);
       }

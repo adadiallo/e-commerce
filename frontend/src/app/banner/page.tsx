@@ -10,10 +10,14 @@ type Produit = {
 };
 
 const produits: Produit[] = [
-  { nom: "Robe élégante", image: "/479b30da3d5a9be6680b4522d20cbc44.jpg" },
-  { nom: "Ensemble pantalon chic", image: "/036e2772943ef95eb91a757bfc9ff070.jpg" },
+  { nom: "Robe et Himare", image: "/479b30da3d5a9be6680b4522d20cbc44.jpg" },
+  { nom: "Robe longue", image: "/036e2772943ef95eb91a757bfc9ff070.jpg" },
   { nom: "Voile coloré", image: "/619cf1fd8a6d2a18e57b17a5e32bbf3d.jpg" },
-  { nom: "Accessoires hijab", image: "/cddb85c09d886ec54e1057e05095563c.jpg" },
+    { nom: "Ensemble Kimino", image: "/cddb85c09d886ec54e1057e05095563c.jpg" },
+
+  { nom: "Accessoires hijab", image: "/78f3d86abce79c190cc68a0cfb362fda.jpg" },
+    { nom: "Voiles", image: "/7938d28ea654fd8c2c6a11f4d4dcf4f8.jpg" },
+
 ];
 
 export default function BannerSlider() {
@@ -69,7 +73,7 @@ export default function BannerSlider() {
             {produit.nom}
           </h2>
           <p className="text-white text-sm md:text-lg mb-2 drop-shadow-md">
-            Découvrez nos collections élégantes pour femmes à Dakar
+            Découvrez nos collections élégantes pour femmes
           </p>
           <a
             href="#produits"
