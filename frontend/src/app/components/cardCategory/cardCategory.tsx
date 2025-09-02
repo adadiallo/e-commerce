@@ -20,7 +20,7 @@ export default function CategorieCard({ onSelectCategorie }: Props) {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:3000/categories"); // ton endpoint
+      const res = await fetch("https://e-commerce-6-uf80.onrender.com/categories"); // ton endpoint
       const data = await res.json();
       setCategories(data);
     } catch (error) {

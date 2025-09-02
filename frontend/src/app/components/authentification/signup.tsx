@@ -20,7 +20,7 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/auth/signup', {
+      const response = await fetch('https://e-commerce-6-uf80.onrender.com/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
