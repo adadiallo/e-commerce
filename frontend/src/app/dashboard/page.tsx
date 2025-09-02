@@ -3,7 +3,8 @@
 import { useState } from "react";
 import AdminNavbar from "../components/adminNavbar";
 import SidebarAdmin from "../components/adminSidebar";
-import ProductTable from "../components/ajoutProduit";
+import DashboardCards from "../countTable/page";
+import ListeCategories from "../category/page";
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -35,8 +36,8 @@ export default function DashboardPage() {
 
         {/* Main content */}
         <main className="flex-1 p-6 ml-0 ">
-          <ProductTable/>
-        </main>
+  <DashboardCards />
+        <ListeCategories />        </main>
       </div>
     </div>
   );
