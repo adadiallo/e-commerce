@@ -7,11 +7,7 @@ type Categorie = {
   nom: string;
 };
 
-type Props = {
-  onSelectCategorie: (id: number) => void;
-};
-
-export default function CategorieCard({ onSelectCategorie }: Props) {
+export default function CardCategoryPage() {
   const [categories, setCategories] = useState<Categorie[]>([]);
 
   useEffect(() => {
@@ -20,12 +16,16 @@ export default function CategorieCard({ onSelectCategorie }: Props) {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:3000/categories"); // ton endpoint
+      const res = await fetch("http://localhost:3000/categories");
       const data = await res.json();
       setCategories(data);
     } catch (error) {
       console.error("Erreur lors du fetch des catégories :", error);
     }
+  };
+
+  const handleSelect = (id: number) => {
+    console.log("Catégorie sélectionnée :", id);
   };
 
   return (
@@ -35,7 +35,7 @@ export default function CategorieCard({ onSelectCategorie }: Props) {
         {categories.map((cat) => (
           <li
             key={cat.id}
-            onClick={() => onSelectCategorie(cat.id)}
+            onClick={() => handleSelect(cat.id)}
             className="py-2 cursor-pointer hover:bg-[#f0fdfd] transition-colors"
           >
             {cat.nom}
