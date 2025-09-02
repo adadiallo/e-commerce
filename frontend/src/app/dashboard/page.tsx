@@ -5,7 +5,7 @@ import AdminNavbar from "../components/adminNavbar";
 import SidebarAdmin from "../components/adminSidebar";
 import ProductTable from "../components/ajoutProduit";
 
-export default function DashboardPage({ children }: { children: React.ReactNode }) {
+export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -35,7 +35,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
         {/* Main content */}
         <main className="flex-1 p-6 ml-0 ">
-          {children}
+          <ProductTable/>
         </main>
       </div>
     </div>

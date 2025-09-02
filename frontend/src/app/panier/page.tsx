@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { FiTrash } from 'react-icons/fi';
 import Navbar from '../components/navbar';
+import Image from 'next/image';
 
 type ProduitPanier = {
   id: number;
@@ -143,8 +144,8 @@ const validerCommande = async () => {
                 className="flex items-center justify-between border-b py-4"
               >
                 <div className="flex items-center gap-4">
-                  <img
-                    src={produit.image}
+                  <Image
+                    src={produit.image ||"/placeholder.png"}
                     alt={produit.nom}
                     className="w-32 h-32 object-cover rounded"
                   />
