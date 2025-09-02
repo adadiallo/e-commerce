@@ -51,7 +51,7 @@ export default function PanierPage() {
     if (quantite < 1) return;
 
     try {
-      await fetch(`http://localhost:3000/panier/update`, {
+      await fetch(`https://e-commerce-6-uf80.onrender.com/panier/update`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export default function PanierPage() {
     if (!token) return;
 
     try {
-      await fetch(`http://localhost:3000/panier/remove/${produitId}`, {
+      await fetch(`https://e-commerce-6-uf80.onrender.com/panier/remove/${produitId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const validerCommande = async () => {
   if (!token) return alert("Vous devez être connecté");
 
   try {
-    const res = await fetch("http://localhost:3000/commandes/valider", {
+    const res = await fetch("https://e-commerce-6-uf80.onrender.com/commandes/valider", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
