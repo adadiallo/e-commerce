@@ -1,16 +1,12 @@
-// app/admin/produits/page.tsx
 
-import UserTable from "@/app/components/listeUtilisateurs";
-import DashboardCards from "@/app/countTable/page";
+
 import DashboardPage from "@/app/dashboard/page";
 
 
 
 export default function AdminUtilisateursPage() {
   return (
-    <DashboardPage>
-      <DashboardCards/>
-      <UserTable/>
-    </DashboardPage>
+    <DashboardPage/>
+      
   );
 }

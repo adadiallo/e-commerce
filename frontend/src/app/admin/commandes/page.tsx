@@ -7,9 +7,7 @@ import DashboardPage from "@/app/dashboard/page";
 
 export default function AdminCommandesPage() {
   return (
-    <DashboardPage>
-      <DashboardCards/>
-      <ListeCommandes/>
-    </DashboardPage>
+    <DashboardPage/>
+     
   );
 }
