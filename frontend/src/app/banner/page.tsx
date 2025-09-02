@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import CategorieCard from "../cardCategory/page";
+import CategorieCard from "../components/cardCategory/cardCategory";
 
 type Produit = {
   nom: string;
