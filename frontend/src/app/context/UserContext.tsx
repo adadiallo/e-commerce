@@ -37,7 +37,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await fetch("http://localhost:3000/auth/profile", {
+          const res = await fetch("https://e-commerce-6-uf80.onrender.com/auth/profile", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
