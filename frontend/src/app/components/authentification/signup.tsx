@@ -93,8 +93,8 @@ export default function Signup() {
           type="submit"
           className="bg-[#0c5e69] text-white py-2 rounded hover:bg-[#094e57] transition duration-300"
         >
-          S'inscrire
-        </button>
+{" S'inscrire"}       
+ </button>
         
         <p className="mt-2 text-center text-base">
           Vous avez déjà un compte ?{" "}

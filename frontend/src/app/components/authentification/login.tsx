@@ -93,9 +93,10 @@ return (
           Se connecter
         </button>
         <p className="mt-2 text-center text-base">
-          Vous n&apos;avez pas de compte ?{" "}
-          <a className="text-[#0c5e69] hover:underline" href="/signup">
-            S'inscrire
+
+{"Vous n'avez pas de compte ?"}     
+     <a className="text-[#0c5e69] hover:underline" href="/signup">
+           { "S'inscrire"}
           </a>
         </p>
       </form>
