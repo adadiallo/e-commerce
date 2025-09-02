@@ -14,7 +14,7 @@ export default function UserTable() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:3000/users", {
+      const res = await fetch("https://e-commerce-6-uf80.onrender.com/users", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -43,7 +43,7 @@ export default function ListeCategories() {
       let res;
       if (selectedCategorie) {
         // Modifier
-        res = await fetch(`http://localhost:3000/categories/${selectedCategorie.id}`, {
+        res = await fetch(`https://e-commerce-6-uf80.onrender.com/categories/${selectedCategorie.id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export default function ListeCategories() {
         else toast.error("Erreur lors de la modification !", { id: loadingToast });
       } else {
         // Ajouter
-        res = await fetch("http://localhost:3000/categories", {
+        res = await fetch("https://e-commerce-6-uf80.onrender.com/categories", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export default function ListeCategories() {
     const loadingToast = toast.loading("Patientez...");
 
     try {
-      const res = await fetch(`http://localhost:3000/categories/${id}`, {
+      const res = await fetch(`https://e-commerce-6-uf80.onrender.com/categories/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

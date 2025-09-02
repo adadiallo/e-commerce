@@ -36,8 +36,10 @@ export default function DashboardPage() {
 
         {/* Main content */}
         <main className="flex-1 p-6 ml-0 ">
-  <DashboardCards />
-        <ListeCategories />        </main>
+  {/* <DashboardCards />
+        <ListeCategories />   */}
+        
+              </main>
       </div>
     </div>
   );

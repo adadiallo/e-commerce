@@ -27,7 +27,7 @@ export default function ListeCommandes() {
     const fetchCommandes = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:3000/commandes', {
+        const res = await fetch('https://e-commerce-6-uf80.onrender.com/commandes', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

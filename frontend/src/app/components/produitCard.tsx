@@ -25,7 +25,7 @@ export default function ProductCard({ produit }: { produit: Product }) {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3000/panier/add", {
+      const response = await fetch("https://e-commerce-6-uf80.onrender.com/panier/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,6 @@ export default function ProductCard({ produit }: { produit: Product }) {
   return (
     <>
       <div className="bg-white text-[#0c5e69] rounded-xl shadow-md m-4 border border-transparent transform transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#0c5e69]/30">
-        {/* Image clickable */}
         <div
           className="relative w-full h-52 cursor-pointer rounded-t-xl overflow-hidden"
           onClick={() => setZoomOuvert(true)}
