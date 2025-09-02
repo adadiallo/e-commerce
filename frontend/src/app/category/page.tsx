@@ -20,7 +20,7 @@ export default function ListeCategories() {
   }, []);
 
   const fetchCategories = async () => {
-    const res = await fetch("http://localhost:3000/categories");
+    const res = await fetch("https://e-commerce-6-uf80.onrender.com/categories");
     const data = await res.json();
     setCategories(data);
   };
