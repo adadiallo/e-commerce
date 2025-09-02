@@ -40,7 +40,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME') ,
         entities: [User, Produit, PanierItem, Commande, Category],
-        synchronize: true, // false en prod
+        synchronize: true, 
       }),
     }),
 
