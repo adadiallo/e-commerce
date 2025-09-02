@@ -5,7 +5,8 @@ import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
     app.enableCors({
-    origin: 'http://localhost:3001', // ou '*' en développement
+    origin: 'https://e-commerce-8-c3oo.onrender.com', // ton frontend Render
+
     credentials: true,
   });
     app.use('/webhook', bodyParser.raw({ type: 'application/json' }));
