@@ -19,7 +19,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:3000/panier/count", {
+      const response = await fetch("https://e-commerce-6-uf80.onrender.com/panier/count", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -18,7 +18,7 @@ export default function ListeProduits() {
   useEffect(() => {
     const fetchProduits = async () => {
       try {
-        const res = await fetch('http://localhost:3000/produits');
+        const res = await fetch('https://e-commerce-6-uf80.onrender.com/produits');
         const data = await res.json();
         setProduits(data);
       } catch (err) {

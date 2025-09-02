@@ -39,14 +39,14 @@ export default function ProduitManager() {
   }, []);
 
   const fetchProduits = async () => {
-    const res = await fetch("http://localhost:3000/produits");
+    const res = await fetch("https://e-commerce-6-uf80.onrender.com/produits");
     const data = await res.json();
     setProduits(data);
       console.log('DONNEES:',data); 
   };
 
   const fetchCategories = async () => {
-    const res = await fetch("http://localhost:3000/categories");
+    const res = await fetch("https://e-commerce-6-uf80.onrender.com/categories");
     const data = await res.json();
     setCategories(data);
   };
@@ -73,7 +73,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     if (selectedProduit) {
-      res = await fetch(`http://localhost:3000/produits/${selectedProduit.id}`, {
+      res = await fetch(`https://e-commerce-6-uf80.onrender.com/produits/${selectedProduit.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       formData.append("categoryId", form.categoryId);
       if (form.imageFile) formData.append("image", form.imageFile);
 
-      res = await fetch("http://localhost:3000/produits", {
+      res = await fetch("https://e-commerce-6-uf80.onrender.com/produits", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -123,7 +123,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   if (!confirm("Supprimer ce produit ?")) return;
   const token = localStorage.getItem("token");
   try {
-    const res = await fetch(`http://localhost:3000/produits/${id}`, {
+    const res = await fetch(`https://e-commerce-6-uf80.onrender.com/produits/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

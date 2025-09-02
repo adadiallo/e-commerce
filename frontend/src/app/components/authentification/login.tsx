@@ -38,7 +38,7 @@ console.log("token reçu :",data.access_token.access_token);
 
 console.log("type du token :", typeof data.access_token.access_token);
 
-        const meRes = await fetch('http://localhost:3000/auth/profile', {
+        const meRes = await fetch('https://e-commerce-6-uf80.onrender.com/auth/profile', {
           headers: {
             Authorization: `Bearer ${data.access_token.access_token}`,
           },
