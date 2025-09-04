@@ -4,7 +4,7 @@ import { useState } from "react";
 import AdminNavbar from "../components/adminNavbar";
 import SidebarAdmin from "../components/adminSidebar";
 import DashboardCards from "../countTable/page";
-import ListeCategories from "../category/page";
+
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,11 +34,10 @@ export default function DashboardPage() {
           <SidebarAdmin onLinkClick={() => setSidebarOpen(false)} />
         </aside>
 
-        {/* Main content */}
+      
         <main className="flex-1 p-6 ml-0 ">
-  {/* <DashboardCards />
-        <ListeCategories />   */}
-        
+
+        <DashboardCards/>
               </main>
       </div>
     </div>
