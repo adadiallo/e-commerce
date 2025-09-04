@@ -1,12 +1,14 @@
+"use client";
+
+import ProduitManager from "@/app/components/ajoutProduit";
+import DashboardLayout from "@/app/components/dashboard";
 
 
-import ListeProduits from "@/app/components/listeProduit";
-import DashboardPage from "@/app/dashboard/page";
 
-
-
-export default function AdminProduitsPage() {
+export default function ProduitsPage() {
   return (
-    <DashboardPage/>
+    <DashboardLayout>
+      <ProduitManager />
+    </DashboardLayout>
   );
 }

@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import AdminNavbar from "../components/adminNavbar";
-import SidebarAdmin from "../components/adminSidebar";
+import AdminNavbar from "./adminNavbar";
+import SidebarAdmin from "./adminSidebar";
 import DashboardCards from "../countTable/page";
-import ProduitManager from "../components/ajoutProduit";
 
 
-export default function DashboardPage() {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -16,14 +15,12 @@ export default function DashboardPage() {
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="md:hidden text-white text-2xl px-3 py-1 rounded hover:bg-[#094e57]"
-          aria-label="Toggle sidebar"
         >
           ☰
         </button>
       </AdminNavbar>
 
       <div className="flex flex-1 pt-8">
-    
         <aside
           className={`
             fixed inset-y-0 left-0 z-40 w-64 bg-[#0c5e69] text-white shadow-lg
@@ -35,11 +32,10 @@ export default function DashboardPage() {
           <SidebarAdmin onLinkClick={() => setSidebarOpen(false)} />
         </aside>
 
-      
         <main className="flex-1 p-6 ml-0 space-y-8">
-
-        <DashboardCards/>
-              </main>
+          <DashboardCards />
+          {children}
+        </main>
       </div>
     </div>
   );

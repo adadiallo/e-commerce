@@ -1,11 +1,14 @@
+"use client";
 
-import DashboardPage from "@/app/dashboard/page";
+import ListeCategories from "@/app/category/page";
+import DashboardLayout from "@/app/components/dashboard";
 
 
 
-export default function AdminCategoriesPage() {
+export default function ProduitsPage() {
   return (
-    <DashboardPage/>
-      
+    <DashboardLayout>
+      <ListeCategories/>
+    </DashboardLayout>
   );
 }
