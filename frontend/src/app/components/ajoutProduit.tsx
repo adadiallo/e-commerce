@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
 import toast from "react-hot-toast";
-import DashboardCards from "../countTable/page";
 import DashboardPage from "../dashboard/page";
 
 type Categorie = {
@@ -144,6 +143,9 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <>
     <DashboardPage/>
+            <main className="flex-1 p-6 ml-0 ">
+    
+         
     <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-[#0c5e69]">Liste des produits</h2>
@@ -289,6 +291,8 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
       )}
     </div>
+                      </main>
+
     </>
   );
 }
