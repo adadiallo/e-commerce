@@ -1,12 +1,15 @@
+'use client';
 
-
-import DashboardPage from "@/app/dashboard/page";
+import DashboardLayout from "@/app/components/dashboard";
+import ListeUtilisateurs from "@/app/components/listeUtilisateurs";
 
 
 
 export default function AdminUtilisateursPage() {
   return (
-    <DashboardPage/>
+    <DashboardLayout>
+      <ListeUtilisateurs/>
+    </DashboardLayout>
       
   );
 }

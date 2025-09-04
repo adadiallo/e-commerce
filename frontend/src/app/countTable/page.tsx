@@ -18,10 +18,10 @@ export default function DashboardCards() {
   const fetchTotals = async () => {
     try {
       const [produitsRes, commandesRes, usersRes, categoriesRes] = await Promise.all([
-        fetch("http://localhost:3000/produits"),
-        fetch("http://localhost:3000/commandes"),
-        fetch("http://localhost:3000/users"),
-        fetch("http://localhost:3000/categories"),
+        fetch("https://e-commerce-6-uf80.onrender.com/produits"),
+        fetch("https://e-commerce-6-uf80.onrender.com/commandes"),
+        fetch("https://e-commerce-6-uf80.onrender.com/users"),
+        fetch("https://e-commerce-6-uf80.onrender.com/categories"),
       ]);
 
       const produits = await produitsRes.json();

@@ -6,7 +6,7 @@ import SidebarAdmin from "./adminSidebar";
 import DashboardCards from "../countTable/page";
 
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

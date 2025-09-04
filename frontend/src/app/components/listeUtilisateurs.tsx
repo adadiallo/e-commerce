@@ -9,7 +9,7 @@ type User = {
   email: string;
 };
 
-export default function UserTable() {
+export default function ListeUtilisateurs() {
   const [users, setUsers] = useState<User[]>([]);
 
   const fetchUsers = async () => {
