@@ -14,6 +14,8 @@ type Produit = {
 
 export default function ListeProduits() {
   const [produits, setProduits] = useState<Produit[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8; // Nombre de produits par page
 
   useEffect(() => {
     const fetchProduits = async () => {
@@ -29,19 +31,50 @@ export default function ListeProduits() {
     fetchProduits();
   }, []);
 
-  return (
-    
-    <div className="">
-     
-        <Navbar/>
-            <div className="mt-8">
+  // Calcul des produits à afficher pour la page courante
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = produits.slice(indexOfFirstProduct, indexOfLastProduct);
 
-      <h1 className="text-2xl font-bold mb-4 ">Produits disponibles</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mx-auto">
-        {produits.map((produit) => (
-          <ProductCard key={produit.id} produit={produit} />
-        ))}
-      </div>
+  const totalPages = Math.ceil(produits.length / productsPerPage);
+
+  return (
+    <div className="bg-white min-h-screen">
+      <Navbar />
+
+      <div className="mt-8 max-w-7xl mx-auto px-4">
+        <h1 className="text-2xl font-bold mb-6">Produits disponibles</h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {currentProducts.map((produit) => (
+            <ProductCard key={produit.id} produit={produit} />
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center items-center mt-6 gap-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Précédent
+          </button>
+
+          <span className="px-3 py-1">
+            Page {currentPage} / {totalPages}
+          </span>
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Suivant
+          </button>
+        </div>
       </div>
     </div>
   );
