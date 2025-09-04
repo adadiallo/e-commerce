@@ -6,14 +6,14 @@ export default function SidebarAdmin({ onLinkClick }: { onLinkClick: () => void 
 
   const links = [
     { name: "Liste Produits", href: "/admin/produits" },
-    { name: "Liste Catégories", href: "/admin/categories" },
+    { name: "Liste Catégories", href: "/admin/category" },
     { name: "Commandes", href: "/admin/commandes" },
         { name: "Liste Utilisateurs", href: "/admin/utilisateurs" },
 
   ];
 
   return (
-    <nav className="flex flex-col h-full p-4">
+    <nav className="flex flex-col h-full p-4 mt-8">
       {links.map((link) => {
         const isActive = pathname === link.href;
         return (
