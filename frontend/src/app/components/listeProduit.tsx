@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from './produitCard';
 import Navbar from './navbar';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 type Produit = {
   id: number;
@@ -15,7 +16,7 @@ type Produit = {
 export default function ListeProduits() {
   const [produits, setProduits] = useState<Produit[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8; // Nombre de produits par page
+  const productsPerPage = 8;
 
   useEffect(() => {
     const fetchProduits = async () => {
@@ -31,11 +32,9 @@ export default function ListeProduits() {
     fetchProduits();
   }, []);
 
-  // Calcul des produits à afficher pour la page courante
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = produits.slice(indexOfFirstProduct, indexOfLastProduct);
-
   const totalPages = Math.ceil(produits.length / productsPerPage);
 
   return (
@@ -51,14 +50,14 @@ export default function ListeProduits() {
           ))}
         </div>
 
-        {/* Pagination */}
+        {/* Pagination avec icônes */}
         <div className="flex justify-center items-center mt-6 gap-4">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 border rounded disabled:opacity-50"
+            className="p-2 border rounded disabled:opacity-50"
           >
-            Précédent
+            <FiChevronLeft size={24} />
           </button>
 
           <span className="px-3 py-1">
@@ -70,9 +69,9 @@ export default function ListeProduits() {
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="px-3 py-1 border rounded disabled:opacity-50"
+            className="p-2 border rounded disabled:opacity-50"
           >
-            Suivant
+            <FiChevronRight size={24} />
           </button>
         </div>
       </div>
