@@ -1,42 +1,34 @@
-// components/adminSidebar.tsx
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-type SidebarProps = {
-  onLinkClick?: () => void;
-};
+export default function SidebarAdmin({ onLinkClick }: { onLinkClick: () => void }) {
+  const pathname = usePathname();
 
-export default function SidebarAdmin({ onLinkClick }: SidebarProps) {
+  const links = [
+    { name: "Liste Produits", href: "/admin/produits" },
+    { name: "Liste Catégories", href: "/admin/categories" },
+    { name: "Commandes", href: "/admin/commandes" },
+        { name: "Liste Utilisateurs", href: "/admin/utilisateurs" },
+
+  ];
+
   return (
-    <div className="flex flex-col h-full p-6">
-      <h2 className="text-2xl font-bold mt-8">Admin Dashboard</h2>
-
-      <nav className="flex flex-col gap-4 text-lg font-medium mt-4">
-        <Link href="/admin/category"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
-            onClick={onLinkClick}>
-         
-            Liste des Categories
-        
-        </Link>
-        <Link href="/admin/produits"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
-            onClick={onLinkClick}>
-         
-            Liste des produits
-        
-        </Link>
-
-        <Link href="/admin/utilisateurs"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
-            onClick={onLinkClick}>
-         
-            Liste des utilisateurs
-          
-        </Link>
-
-        {/* <Link href="/admin/commandes"  className="hover:bg-[#094e57] rounded px-3 py-2 transition block"
-            onClick={onLinkClick}>
-         
-            Liste des commandes
-        </Link> */}
-      </nav>
-    </div>
+    <nav className="flex flex-col h-full p-4">
+      {links.map((link) => {
+        const isActive = pathname === link.href;
+        return (
+          <Link
+            key={link.href}
+            href={link.href}
+            onClick={onLinkClick}
+            className={`p-2 mb-2 rounded ${
+              isActive ? "bg-white text-[#0c5e69] font-semibold" : "text-white hover:bg-[#094e57]"
+            }`}
+          >
+            {link.name}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
