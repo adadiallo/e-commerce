@@ -38,7 +38,7 @@ export default function DashboardPage() {
       
         <main className="flex-1 p-6 ml-0 ">
 
-        <DashboardCards/>
+        {/* <DashboardCards/> */}
         <ProduitManager/>
               </main>
       </div>
