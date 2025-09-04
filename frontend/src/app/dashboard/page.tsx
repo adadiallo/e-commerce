@@ -4,6 +4,7 @@ import { useState } from "react";
 import AdminNavbar from "../components/adminNavbar";
 import SidebarAdmin from "../components/adminSidebar";
 import DashboardCards from "../countTable/page";
+import ProduitManager from "../components/ajoutProduit";
 
 
 export default function DashboardPage() {
@@ -38,6 +39,7 @@ export default function DashboardPage() {
         <main className="flex-1 p-6 ml-0 ">
 
         <DashboardCards/>
+        <ProduitManager/>
               </main>
       </div>
     </div>

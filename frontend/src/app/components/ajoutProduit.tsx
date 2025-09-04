@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
 import toast from "react-hot-toast";
-import DashboardPage from "../dashboard/page";
 
 type Categorie = {
   id: number;
@@ -43,11 +42,13 @@ export default function ProduitManager() {
     const res = await fetch("https://e-commerce-6-uf80.onrender.com/produits");
     const data = await res.json();
     setProduits(data);
-      console.log('DONNEES:',data); 
+    console.log("DONNEES:", data);
   };
 
   const fetchCategories = async () => {
-    const res = await fetch("https://e-commerce-6-uf80.onrender.com/categories");
+    const res = await fetch(
+      "https://e-commerce-6-uf80.onrender.com/categories"
+    );
     const data = await res.json();
     setCategories(data);
   };
@@ -57,242 +58,250 @@ export default function ProduitManager() {
     if (file) setForm((prev) => ({ ...prev, imageFile: file }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!form.categoryId) {
-    toast.error("Veuillez choisir une catégorie !");
-    return;
-  }
-
-  const token = localStorage.getItem("token");
-  let res;
-
-  try {
-    if (selectedProduit) {
-      res = await fetch(`https://e-commerce-6-uf80.onrender.com/produits/${selectedProduit.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          nom: form.nom,
-          description: form.description,
-          prix: parseFloat(form.prix),
-          categoryId: parseInt(form.categoryId),
-        }),
-      });
-      if (res.ok) toast.success("Produit modifié avec succès !");
-      else toast.error("Erreur lors de la modification !");
-    } else {
-      const formData = new FormData();
-      formData.append("nom", form.nom);
-      formData.append("description", form.description);
-      formData.append("prix", form.prix);
-      formData.append("categoryId", form.categoryId);
-      if (form.imageFile) formData.append("image", form.imageFile);
-
-      res = await fetch("https://e-commerce-6-uf80.onrender.com/produits", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (res.ok) toast.success("Produit ajouté avec succès !");
-      else toast.error("Erreur lors de l'ajout !");
+    if (!form.categoryId) {
+      toast.error("Veuillez choisir une catégorie !");
+      return;
     }
 
-    if (res.ok) {
-      setShowModal(false);
-      setSelectedProduit(null);
-      setForm({ nom: "", description: "", prix: "", imageFile: null, categoryId: "" });
-      fetchProduits();
+    const token = localStorage.getItem("token");
+    let res;
+
+    try {
+      if (selectedProduit) {
+        res = await fetch(
+          `https://e-commerce-6-uf80.onrender.com/produits/${selectedProduit.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              nom: form.nom,
+              description: form.description,
+              prix: parseFloat(form.prix),
+              categoryId: parseInt(form.categoryId),
+            }),
+          }
+        );
+        if (res.ok) toast.success("Produit modifié avec succès !");
+        else toast.error("Erreur lors de la modification !");
+      } else {
+        const formData = new FormData();
+        formData.append("nom", form.nom);
+        formData.append("description", form.description);
+        formData.append("prix", form.prix);
+        formData.append("categoryId", form.categoryId);
+        if (form.imageFile) formData.append("image", form.imageFile);
+
+        res = await fetch("https://e-commerce-6-uf80.onrender.com/produits", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+        if (res.ok) toast.success("Produit ajouté avec succès !");
+        else toast.error("Erreur lors de l'ajout !");
+      }
+
+      if (res.ok) {
+        setShowModal(false);
+        setSelectedProduit(null);
+        setForm({
+          nom: "",
+          description: "",
+          prix: "",
+          imageFile: null,
+          categoryId: "",
+        });
+        fetchProduits();
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue !");
     }
-  } catch (error) {
-    toast.error("Une erreur est survenue !");
-  }
-};
-
-
-
+  };
 
   const handleDelete = async (id: number) => {
-  if (!confirm("Supprimer ce produit ?")) return;
-  const token = localStorage.getItem("token");
-  try {
-    const res = await fetch(`https://e-commerce-6-uf80.onrender.com/produits/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      toast.success("Produit supprimé !");
-      fetchProduits();
-    } else {
-      toast.error("Erreur lors de la suppression !");
+    if (!confirm("Supprimer ce produit ?")) return;
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(
+        `https://e-commerce-6-uf80.onrender.com/produits/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.ok) {
+        toast.success("Produit supprimé !");
+        fetchProduits();
+      } else {
+        toast.error("Erreur lors de la suppression !");
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue !");
     }
-  } catch (error) {
-    toast.error("Une erreur est survenue !");
-  }
-};
-
+  };
 
   return (
     <>
-    <DashboardPage/>
-            <main className="flex-1 p-6 ml-0 ">
-    
-         
-    <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-[#0c5e69]">Liste des produits</h2>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-[#0c5e69] text-white px-4 py-2 rounded flex items-center gap-2"
-        >
-          <FiPlus /> Ajouter
-        </button>
-      </div>
-
-      {/* Tableau Produits */}
-      <table className="w-full border border-gray-200">
-        <thead className="bg-[#0c5e69] text-white text-left">
-          <tr>
-            <th className="p-2">Image</th>
-            <th className="p-2">Nom</th>
-            <th className="p-2">Description</th>
-            <th className="p-2">Prix</th>
-            <th className="p-2">Catégorie</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {produits.map((prod) => (
-            <tr key={prod.id} className="border-t hover:bg-blue-50">
-              <td className="p-2">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
-                  <Image
-                    src={prod.image || "/placeholder.png"}
-                    alt={prod.nom}
-                    width={48}
-                    height={48}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              </td>
-              <td className="p-2">{prod.nom}</td>
-              <td className="p-2">{prod.description}</td>
-              <td className="p-2">{prod.prix} FCFA</td>
-              <td className="p-2">{prod.category?.nom || "-"}</td>
-              <td className="p-2 flex gap-2">
-                <button
-                  onClick={() => {
-                    setSelectedProduit(prod);
-                    setForm({
-                      nom: prod.nom,
-                      description: prod.description,
-                      prix: prod.prix.toString(),
-                      imageFile: null,
-                      categoryId: prod.category?.id.toString() || "",
-                    });
-                    setShowModal(true);
-                  }}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  <FiEdit />
-                </button>
-                <button
-                  onClick={() => handleDelete(prod.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <FiTrash />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Modal Ajout/Édition */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded w-full max-w-md">
-            <h2 className="text-lg font-semibold text-[#0c5e69] mb-4">
-              {selectedProduit ? "Modifier le produit" : "Ajouter un produit"}
+      
+        <div className="max-w-5xl mx-auto mt-10 p-4 text-sm">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-[#0c5e69]">
+              Liste des produits
             </h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <input
-                type="text"
-                name="nom"
-                placeholder="Nom"
-                value={form.nom}
-                onChange={handleChange}
-                className="border border-gray-300 p-2 rounded"
-                required
-              />
-              <textarea
-                name="description"
-                placeholder="Description"
-                value={form.description}
-                onChange={handleChange}
-                className="border border-gray-300 p-2 rounded"
-                required
-              />
-              <input
-                type="number"
-                name="prix"
-                placeholder="Prix"
-                value={form.prix}
-                onChange={handleChange}
-                className="border border-gray-300 p-2 rounded"
-                required
-              />
-              {/* Select catégorie */}
-              <select
-                name="categoryId"
-                value={form.categoryId}
-                onChange={handleChange}
-                className="border border-gray-300 p-2 rounded"
-                required
-              >
-                <option value="">-- Choisir une catégorie --</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.nom}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="border border-gray-300 p-2 rounded"
-              />
-              <div className="flex justify-between mt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border rounded"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="bg-[#0c5e69] text-white px-4 py-2 rounded"
-                >
-                  {selectedProduit ? "Mettre à jour" : "Enregistrer"}
-                </button>
-              </div>
-            </form>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-[#0c5e69] text-white px-4 py-2 rounded flex items-center gap-2"
+            >
+              <FiPlus /> Ajouter
+            </button>
           </div>
-        </div>
-      )}
-    </div>
-                      </main>
 
+          <table className="w-full border border-gray-200">
+            <thead className="bg-[#0c5e69] text-white text-left">
+              <tr>
+                <th className="p-2">Image</th>
+                <th className="p-2">Nom</th>
+                <th className="p-2">Description</th>
+                <th className="p-2">Prix</th>
+                <th className="p-2">Catégorie</th>
+                <th className="p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {produits.map((prod) => (
+                <tr key={prod.id} className="border-t hover:bg-blue-50">
+                  <td className="p-2">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
+                      <Image
+                        src={prod.image || "/placeholder.png"}
+                        alt={prod.nom}
+                        width={48}
+                        height={48}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  </td>
+                  <td className="p-2">{prod.nom}</td>
+                  <td className="p-2">{prod.description}</td>
+                  <td className="p-2">{prod.prix} FCFA</td>
+                  <td className="p-2">{prod.category?.nom || "-"}</td>
+                  <td className="p-2 flex gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedProduit(prod);
+                        setForm({
+                          nom: prod.nom,
+                          description: prod.description,
+                          prix: prod.prix.toString(),
+                          imageFile: null,
+                          categoryId: prod.category?.id.toString() || "",
+                        });
+                        setShowModal(true);
+                      }}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <FiEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(prod.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <FiTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded w-full max-w-md">
+                <h2 className="text-lg font-semibold text-[#0c5e69] mb-4">
+                  {selectedProduit
+                    ? "Modifier le produit"
+                    : "Ajouter un produit"}
+                </h2>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <input
+                    type="text"
+                    name="nom"
+                    placeholder="Nom"
+                    value={form.nom}
+                    onChange={handleChange}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                  />
+                  <textarea
+                    name="description"
+                    placeholder="Description"
+                    value={form.description}
+                    onChange={handleChange}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="prix"
+                    placeholder="Prix"
+                    value={form.prix}
+                    onChange={handleChange}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                  />
+                  <select
+                    name="categoryId"
+                    value={form.categoryId}
+                    onChange={handleChange}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                  >
+                    <option value="">-- Choisir une catégorie --</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.nom}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="border border-gray-300 p-2 rounded"
+                  />
+                  <div className="flex justify-between mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-2 border rounded"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#0c5e69] text-white px-4 py-2 rounded"
+                    >
+                      {selectedProduit ? "Mettre à jour" : "Enregistrer"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
     </>
   );
 }
